@@ -1,0 +1,12 @@
+# cpp
+*/output/*
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.dylib
+
+
+# python
+__pycache__/
