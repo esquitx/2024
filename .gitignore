@@ -16,4 +16,4 @@ __pycache__/
 .vscode/
 
 #misc
-*/test.txt
+test*.txt
