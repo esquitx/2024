@@ -10,51 +10,37 @@ def read_data(filename='../input.txt'):
 
         return available, sequences
 
-def can_make_sequence(target, available):
-
-    # dp approach - thank you KTH!
-
-    n = len(target)
-    can_build = [False] * (n + 1)
-    can_build[0] = True # can always build empty string
-
-
-    for i in range(1, n+1):
-        for sequence in available:
-            if len(sequence) <= i:
-                if target[i-len(sequence):i] == sequence and can_build[i-len(sequence)]:
-                    can_build[i] = True
-                    break
-
-    return can_build[n]
-
-def num_ways_to_build_sequence(target, available):
+def can_make_sequence(target, available, used=None):
+    if used is None:
+        used = set()
     
-    n = len(target)
-    num_ways = [0] * (n + 1)
-    num_ways[0] = 1 # can always build empty string
-
-    for i in range(1, n+1):
-        for sequence in available:
-            if len(sequence) <= i:
-                if target[i-len(sequence):i] == sequence:
-                    num_ways[i] += num_ways[i-len(sequence)]
-
-    return num_ways[n]
+    # If target is empty, we found a valid combination
+    if not target:
+        return True
+    
+    # Try each available value
+    for i, val in enumerate(available):
+        if i not in used and target.startswith(val):
+            # Use this value and try to make the rest of the sequence
+            used.add(i)
+            if can_make_sequence(target[len(val):], available, used):
+                return True
+            used.remove(i)
+    
+    return False
 
 def part1(data):
     available, sequences = data
-    return sum(1 for seq in sequences if can_make_sequence(seq, available))
-
-
-def part2(data):
-    available, sequences = data 
-    return sum(num_ways_to_build_sequence(seq, available) for seq in sequences)
+    count = 0
+    for seq in sequences:
+        if can_make_sequence(seq, available):
+            count += 1
+    return count
 
 if __name__ == '__main__':
 
-    data = read_data('../input.txt')
+    data = read_data('../test.txt')
 
-    # print(data)
+    print(data)
     print(part1(data))
-    print(part2(data))
+    # print(part2(data))
